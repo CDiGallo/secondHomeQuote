@@ -32,15 +32,16 @@
 # 
 # # generalizing ------------------------------------------------------------
 
-install.packages("ggplot2")
+
 library(readxl)
 library(tidyverse)
 library(readr)
 library(dplyr)
+
 setwd("C:/Users/U80867579/Documents/LINDAS")
 
 setwd("\\\\adb.intra.admin.ch/Userhome$/BAR-01/U80867579/data/Documents/LINDAS wichtige Dokumente/are/raw_data")
-
+setwd("C:/Users/claudio/Documents/Projekte/Zweitwohnungen/raw_data")
 
 # list_file <- list.files(pattern = "*.xlsx") %>% 
 #   lapply(read_excel, sheet=2) %>% 
@@ -48,12 +49,20 @@ setwd("\\\\adb.intra.admin.ch/Userhome$/BAR-01/U80867579/data/Documents/LINDAS w
 #list_file
 
 
+Data <- read_excel("ZWG_2018.xlsx", sheet = 2 ) # Here because the "ifelse" needs it to be loaded
+Data <- read_excel("ZWG_2018.xlsx", sheet = 2 ) %>% add_column("Status" = ifelse(Data$ZWG_3200 %in% c(1,3), 0,1))%>% add_column("Datum"="2018-01-01") 
+
+Data
+
+Data1 <- read_excel("ZWG_2019_Q1.xlsx", sheet = 2) %>% add_column("Datum"="2019-03-31")
+
+# explains, that their excel file explains it wrong. staus 1 means over 20% status 0 means less than 20% second homes
+#f <- Data1  %>% add_column("over_limit" = ifelse(Data1$Verfahren %in% c(1,3,5,7), 0,1))
+#sum(f$Verfahren==f$Status)
 
 
-
-Data1 <- read_excel("ZWG_2019_Q1.xlsx", sheet = 2) %>% add_column("Datum"="2019-03-01")
-
-Data2 <- read_excel("ZWG_2019_Q3.xlsx", sheet = 2) %>% add_column("Datum"="2019-10-01")
+Data2 <- read_excel("ZWG_2019_Q3.xlsx", sheet = 2) %>% add_column("Datum"="2019-10-31")
+Data2
 
 df <- add_row(
   Data1,
@@ -61,9 +70,9 @@ df <- add_row(
 )
 df
 
-Data1 <- read_excel("ZWG_2020_Q1.xlsx", sheet = 2) %>% add_column("Datum"="2020-03-01")
+Data1 <- read_excel("ZWG_2020_Q1.xlsx", sheet = 2) %>% add_column("Datum"="2020-03-31")
 
-Data2 <- read_excel("ZWG_2020_Q3.xlsx", sheet = 2) %>% add_column("Datum"="2020-10-01")
+Data2 <- read_excel("ZWG_2020_Q3.xlsx", sheet = 2) %>% add_column("Datum"="2020-10-31")
 
 df2 <- add_row(
   Data1,
@@ -71,25 +80,25 @@ df2 <- add_row(
 )
 
 
-Data1 <- read_excel("ZWG_2021_Q1.xlsx", sheet = 2) %>% add_column("Datum"="2021-03-01")
+Data1 <- read_excel("ZWG_2021_Q1.xlsx", sheet = 2) %>% add_column("Datum"="2021-03-31")
 
-Data2 <- read_excel("ZWG_2021_Q3.xlsx", sheet = 2) %>% add_column("Datum"="2021-10-01")
+Data2 <- read_excel("ZWG_2021_Q3.xlsx", sheet = 2) %>% add_column("Datum"="2021-10-31")
 
 df3 <- add_row(
   Data1,
   Data2
 )
 
-Data1 <- read_excel("ZWG_2022_Q1.xlsx", sheet = 2) %>% add_column("Datum"="2022-03-01")
+Data1 <- read_excel("ZWG_2022_Q1.xlsx", sheet = 2) %>% add_column("Datum"="2022-03-31")
 
-Data2 <- read_excel("ZWG_2022_Q3.xlsx", sheet = 2) %>% add_column("Datum"="2022-10-01")
+Data2 <- read_excel("ZWG_2022_Q3.xlsx", sheet = 2) %>% add_column("Datum"="2022-10-31")
 
 df4 <- add_row(
   Data1,
   Data2
 )
 
-Data1 <- read_excel("ZWG_2023_Q1.xlsx", sheet = 2) %>% add_column("Datum"="2023-03-01")
+Data1 <- read_excel("ZWG_2023_Q1.xlsx", sheet = 2) %>% add_column("Datum"="2023-03-31")
 
 
 df <- add_row(
@@ -114,6 +123,19 @@ df <- add_row(
   df4
 )
 
+Canton_list <- df %>% select(Kt_No,Kt_Kz) %>% unique() #this is the referencelist of cantons which each identifier
+Canton_list
+Data <-  left_join(Data,Canton_list, by= c("KT"="Kt_Kz")) %>% rename(Kt_Kz=KT) %>% rename(Verfahren = ZWG_3200) #we join the  Canton_identifier to the first excel.
+
+
+
+df <- add_row(
+  df,
+  Data
+)
+
+
+
 #adding the first one which is irregular:
 
 # Data2 <- read_excel("ZWG_2018.xlsx", sheet = 2) %>% add_column("Datum"="2018-12-31", "Status"= NA) %>% rename(Kt_Kz=KT, Verfahren=ZWG_3200)
@@ -124,11 +146,11 @@ df <- add_row(
 # 
 # 
 # #for the time being Verfahren will be excluded, as it is not campatible with 2018
-df <- df %>% select(-"Status")
+#df <- df %>% select(-"Status")
 
 
 
-write_csv("Zweitwohnungen_file_gemeinden.csv",x = df)
+write_csv("Zweitwohnungen_file_gemeinden_every_year.csv", x=df)
 
 
 
