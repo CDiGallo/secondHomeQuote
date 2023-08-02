@@ -1,0 +1,5 @@
+﻿id;text
+1;Gemeinde mit weniger als 20% Zweitwohnungsanteil
+2;Gemeinde mit mehr als 20% Zweitwohnungsanteil
+3;Gemeinde in einem laufenden Verfahren, Zweitwohnungsanteil liegt unter 20%
+4;Gemeinde in einem laufenden Verfahren, Zweitwohnungsanteil liegt über 20%
