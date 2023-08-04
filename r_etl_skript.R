@@ -138,7 +138,7 @@ aggregation
 aggregation <- aggregation %>% rename(Gesamtzahl_aller_wohnungen=ZWG_3150, Zweitwohnungsanteil=ZWG_3120, Erstwohnungsanteil= ZWG_3110, Anzahlerstwohnungen_gleichgestellter_wohnungen=ZWG_3100, Anzahl_Erstwohnungen=ZWG_3010)
 
 
-write_csv("Zweitwohnungen_file_gemeinden_every_year_aggregation.csv", x=df)
+write_csv("Zweitwohnungen_file_gemeinden_every_year_aggregation.csv", x=aggregation)
 
 # anz_wohnungen <- df %>% group_by(Kt_Kz,Datum) %>%  summarise(Anzahlwohnungen= sum(ZWG_3150))
 # anz_wohnungen
